@@ -24,6 +24,22 @@ Route::get('/feed', function () {
             'likeCount' => 23,
             'replyCount' => 45,
             'repostCount' => 10,
+            'replies' => [
+                [
+                    'profile' => [
+                        'avatar' => '/images/adrian.png',
+                        'displayName' => 'Adrian',
+                        'handle' => '@adre_22'
+                    ],
+                    'postedDateTime' => '1h',
+                    'content' => <<<str
+                        <p>Heh — this looks just like me!</p>
+                    str,
+                    'likeCount' => 10,
+                    'replyCount' => 20,
+                    'repostCount' => 30,
+                ]
+            ]
         ],
     ]));
 
@@ -48,6 +64,22 @@ Route::get('/profile', function () {
             'likeCount' => 23,
             'replyCount' => 45,
             'repostCount' => 10,
+            'replies' => [
+                [
+                    'profile' => [
+                        'avatar' => '/images/adrian.png',
+                        'displayName' => 'Adrian',
+                        'handle' => '@adre_22'
+                    ],
+                    'postedDateTime' => '1h',
+                    'content' => <<<str
+                        <p>Heh — this looks just like me!</p>
+                    str,
+                    'likeCount' => 10,
+                    'replyCount' => 20,
+                    'repostCount' => 30,
+                ]
+            ]
         ],
     ]));
 
