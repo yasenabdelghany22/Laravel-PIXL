@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Follow;
 use App\Models\Post;
 use App\Models\Profile;
+use App\Queries\ProfilePageQuery;
+use App\Queries\ProfileWithRepliesQuery;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -17,14 +19,7 @@ class ProfileController extends Controller
     {
         $profile->loadCount(['followings', 'followers']);
 
-        $posts = Post::query()->where('profile_id', $profile->id)
-            ->whereNull('parent_id')
-            ->with([
-                'repostOf' => fn($q) => $q->withCount(['replies', 'likes', 'reposts'])
-            ])
-            ->withCount(['replies', 'likes', 'reposts'])
-            ->latest()
-            ->get();
+        $posts = ProfilePageQuery::for($profile, Auth::user()?->profile)->get();
 
         return view('profiles.show', compact('profile', 'posts'));
     }
@@ -33,25 +28,7 @@ class ProfileController extends Controller
     {
         $profile->loadCount(['followings', 'followers']);
 
-        $posts = Post::query()
-            ->where(fn($q) => $q
-                ->whereBelongsTo($profile, 'profile')
-                ->whereNull('parent_id')
-            )
-            ->orWhereHas('replies', fn($q) => $q
-                ->whereBelongsTo($profile, 'profile')
-            )
-            ->with(['replies' => fn($q) => $q->withCount(['replies', 'likes', 'reposts'])])
-            ->with([
-                'profile',
-                'repostOf' => fn($q) => $q->withCount(['likes', 'reposts', 'replies']),
-                'repostOf.profile',
-                'parent.profile',
-                'replies' => fn($q) => $q->whereBelongsTo($profile, 'profile')->with('profile')->oldest()
-            ])
-            ->withCount(['replies', 'likes', 'reposts'])
-            ->latest()
-            ->get();
+        $posts = ProfileWithRepliesQuery::for($profile, Auth::user()?->profile)->get();
 
         return view('profiles.replies', compact('profile', 'posts'));
     }

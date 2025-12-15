@@ -6,6 +6,7 @@ use App\Http\Requests\CreatePostRequest;
 use App\Models\Like;
 use App\Models\Post;
 use App\Models\Profile;
+use App\Queries\PostThreadQuery;
 use App\Queries\TimelineQuery;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -26,21 +27,7 @@ class PostController extends Controller
 
     public function show(Profile $profile, Post $post): View
     {
-        $post->load([
-            'replies' => function ($query) {
-                $query->withCount(['replies', 'likes', 'reposts'])
-                    ->with([
-                        'profile',
-                        'parent.profile',
-                        'replies' => function($query)  {
-                            $query->withCount(['replies', 'likes', 'reposts'])
-                                ->with(['profile', 'parent.profile'])
-                                ->oldest();
-                        }
-                    ])
-                    ->oldest();
-            }
-        ])->loadCount(['likes', 'reposts', 'replies']);
+        $post = PostThreadQuery::for($post, Auth::user()?->profile)->load();
 
         return view('posts.show', ['post' => $post]);
     }
@@ -93,7 +80,7 @@ class PostController extends Controller
         return response()->json(compact('success'));
     }
 
-    public function destroy(Profile $profile, Post $post)
+    public function destroy(Profile $profile, Post $post): JsonResponse
     {
         $currentProfile = Auth::user()->profile;
         $success = false;
