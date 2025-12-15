@@ -1,6 +1,4 @@
 <x-layout title="PIXL - Feed">
-    <!-- Navigation -->
-    @include('partials.navigation')
 
     <!-- Content -->
     <main class="-mx-4 flex grow flex-col gap-4 overflow-y-auto px-4 py-4">
@@ -35,6 +33,4 @@
         </footer>
     </main>
 
-    <!-- Sidebar -->
-    @include('partials.sidebar')
 </x-layout>

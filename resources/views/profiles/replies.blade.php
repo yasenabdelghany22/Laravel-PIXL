@@ -1,6 +1,4 @@
 <x-layout title="PIXL - Profile">
-    <!-- Navigation -->
-    @include('partials.navigation', ['shouldPreviewPostBtn' => true])
 
     <!-- Content -->
     <main class="-mx-4 flex grow flex-col gap-4 overflow-y-auto px-4 py-4">
@@ -45,8 +43,5 @@
             <div class="h-20 bg-[url(/resources/images/white-noise.gif)]"></div>
         </footer>
     </main>
-
-    <!-- Sidebar -->
-    @include('partials.sidebar')
 
 </x-layout>
